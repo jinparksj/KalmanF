@@ -1,5 +1,5 @@
-# KalmanF
-All kinds of Kalman Filter with Python and C++
+# Kalman Filter
+All kinds of Kalman Filter with C++ and Python
 
 
 ### Kalman Filter Basics
