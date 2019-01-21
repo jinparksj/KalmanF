@@ -18,12 +18,12 @@ int main()
     //random number - normal/Gaussian distribution
     //default random generator with state of time -> every execution has different random number
 
-    int t, count = 100;
+    int t, count = 500;
     double x = -0.37727; //truth value
 
     ///////// Kalman Filter /////////
     double Q = 1e-5; //process variance
-    double R = 0.0001; //estimate of measurement variance
+    double R = 1; //estimate of measurement variance
 
     Scalar stddevR = Scalar::all(sqrt(R));
     vector<float> measurement_k(count); // the noisy measurements, z_k

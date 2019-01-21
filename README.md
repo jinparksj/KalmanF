@@ -30,7 +30,7 @@ All kinds of Kalman Filter with Python and C++
     * update (statePost)
         * K_t = P'_k * H^T * ( H * P'_K * H^T + R )^-1
         * x_k = x'_k + K_t * (z_k - H * x'_k)
-        * P_k = (I - K_k * H ) * P'_k
+        * P_k = (I - K_t * H ) * P'_k
 
 
 
