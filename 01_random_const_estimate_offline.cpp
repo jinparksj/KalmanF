@@ -25,7 +25,7 @@ int main()
     double Q = 1e-5; //process variance
     double R = 1; //estimate of measurement variance
 
-    Scalar stddevR = Scalar::all(sqrt(R));
+    Scalar stddevR = Scalar::all(sqrt(R)); //stddevR.val = [sqrt(R), sqrt(R), sqrt(R), sqrt(R)]
     vector<float> measurement_k(count); // the noisy measurements, z_k
     randn(measurement_k, Scalar::all(x), stddevR);
 

@@ -66,9 +66,46 @@ int main(){
         postP = (1 - K) * preP;
 
         //drawing the truth value, x = -0.37727
-        Point
+        Point pt1, pt2;
+        pt1.x = 0;
+        pt1.y = size.height - cvRound(scale*x - scale*minVal);
+        pt2.x = size.width;
+        pt2.y = size.height - cvRound(scale*x - scale*minVal);
 
+        line(dstImage, pt1, pt2, Scalar(255, 0, 0), 2);
+
+        for (int k = count - 1; k>0 ; k--)
+        {
+            int k1 = (t + k) % count;
+            int k2 = (t + k + 1) % count;
+
+            //drawing the noisy measurements, observations, measurement_k
+            pt1.x = k * step;
+            pt1.y = size.height - cvRound(scale * measurement_k[k1] - scale * minVal);
+
+            pt2.x = (k+1) * step;
+            pt2.y = size.height - cvRound(scale * measurement_k[k2] - scale * minVal);
+
+            line(dstImage, pt1, pt2, Scalar(0, 255, 0), 2);
+
+            //drawing the filter estimate, state_k
+            pt1.x = k*step;
+            pt1.y = size.height - cvRound(scale * state_k[k1] - scale * minVal);
+
+            pt2.x = (k+1) * step;
+            pt2.y = size.height - cvRound(scale * state_k[k2] - scale * minVal);
+
+            line(dstImage, pt1, pt2, Scalar(0, 0, 255), 2);
+        }
+        imshow("dstImgage", dstImage);
+        int ckey = waitKey(30);
+        if (ckey == 27) break;
+        t = (t + 1) % count;
+        dstImage = Scalar::all(255);
     }
+    return 0;
+
+
 
 
 
