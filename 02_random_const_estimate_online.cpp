@@ -44,7 +44,7 @@ int main(){
 
     state_k[0] = 0.0;
     postP = 1.0;
-    theRNG().state = time(NULL);
+    //theRNG().state = time(NULL);
     int t = 1;
     for (;;)
     {
