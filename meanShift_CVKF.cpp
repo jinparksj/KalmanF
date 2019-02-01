@@ -3,6 +3,7 @@
 //
 
 #include "onMouse.h"
+#include <opencv2/opencv.hpp>
 
 using namespace std;
 using namespace cv;
@@ -202,11 +203,58 @@ int main()
             Point pt2 = Point2f(pt1.x + trackWindow.width, pt1.y + trackWindow.height);
             rectangle(dstImage, pt1, pt2, Scalar(0, 0, 255), 2);
 
+            // Validate the result of cvMeanShift
+            Mat hImageROI(hImage, trackWindow), maskROI(mask, trackWindow);
+            calcHist(&hImageROI, 1, &channels, maskROI, hist2, 1, &histSize, ranges);
+            normalize(hist2, hist2, 1.0);
+            double dist = compareHist(hist1, hist2, HISTCMP_BHATTACHARYYA);
+            if(dist < DIST_TH) // A tracking object is detected by meanShift
+            {
+                ptMeasured = Point2f(trackWindow.x + trackWindow.width / 2.0, trackWindow.y + trackWindow.height / 2.0);
+
+                //measurements : the center point of the track_window
+                measurement.at<float>(0, 0) = ptMeasured.x;
+                measurement.at<float>(1, 0) = ptMeasured.y;
+
+                Mat estimated = KF.correct(measurement); // update
+
+                ptEstimated.x = estimated.at<float>(0, 0);
+                ptEstimated.y = estimated.at<float>(1, 0);
+
+                trackWindow = Rect(ptEstimated.x - selection.width / 2, ptEstimated.y - selection.height/2,
+                        selection.width, selection.height);
+
+                pt1 = Point(ptMeasured.x - trackWindow.width / 2, ptMeasured.y - trackWindow.height / 2);
+                pt2 = Point(ptMeasured.x + trackWindow.width / 2, ptMeasured.y + trackWindow.height / 2);
+                rectangle(dstImage, pt1, pt2, Scalar(0, 0, 255), 2);
+                circle(dstImage, ptMeasured, 5, Scalar(0, 0, 255), 2);
+
+                pt1 = Point(ptEstimated.x - trackWindow.width / 2, ptEstimated.y - trackWindow.height / 2);
+                pt2 = Point(ptEstimated.x + trackWindow.width / 2, ptEstimated.y + trackWindow.height / 2);
+                rectangle(dstImage, pt1, pt2, Scalar(0, 0, 255), 2);
+                circle(dstImage, ptEstimated, 5, Scalar(0, 0, 255), 2);
+            }
+            else // A tracking object is not detected by meanShift
+            {
+                trackWindow = Rect(ptPredicted.x - selection.width / 2, ptPredicted.y - selection.height / 2,
+                        selection.width, selection.height);
+                pt1 = Point(ptPredicted.x - trackWindow.width / 2, ptPredicted.y - trackWindow.height / 2);
+                pt2 = Point(ptPredicted.x + trackWindow.width / 2, ptPredicted.y + trackWindow.height / 2);
+
+                rectangle(dstImage, pt1, pt2, Scalar(0, 255, 0), 2);
+                circle(dstImage, ptPredicted, 5, Scalar(0, 255, 0), 2);
+            }
 
         }
+        imshow("dstImage", dstImage);
+        outputVideo << dstImage;
+
+        int ckey = waitKey(delay);
+        if (ckey == 27) break;
+
     }
 
-
+    return 0;
 
 }
 

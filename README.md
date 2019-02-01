@@ -32,7 +32,8 @@ All kinds of Kalman Filter with C++ and Python
         * x_k = x'_k + K_t * (z_k - H * x'_k)
         * P_k = (I - K_t * H ) * P'_k
 
-
+### MeanShift with Kalman Filter
+![meanshift](./img/dstImage.png)
 
 
 
